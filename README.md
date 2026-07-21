@@ -4,6 +4,15 @@ Find nearby stores by address or PIN code. Enter a location, pick a store type (
 
 Search results can be downloaded from the results header as either a CSV file or an Excel (`.xlsx`) workbook.
 
+## Tech Stack
+
+- **Framework & Core:** [Next.js](https://nextjs.org/) (App Router), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Maps & Location Services:** [Leaflet](https://leafletjs.com/) & [React Leaflet](https://react-leaflet.js.org/) (with OpenStreetMap tiles), [Google Geocoding API](https://developers.google.com/maps/documentation/geocoding), [Google Places API (New)](https://developers.google.com/maps/documentation/places/web-service)
+- **Validation & Logic:** [Zod](https://zod.dev/), In-memory TTL Cache, Haversine distance calculations
+- **Exporting Data:** [`write-excel-file`](https://www.npmjs.com/package/write-excel-file) (Excel `.xlsx`), Native CSV generation
+- **Testing & Code Quality:** [Vitest](https://vitest.dev/), [ESLint](https://eslint.org/)
+
 ## How it works
 
 ```mermaid
