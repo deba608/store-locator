@@ -30,22 +30,15 @@ export default function ExportButtons({
   async function exportXlsx() {
     setExporting(true);
     try {
-      const { Workbook } = await import("exceljs");
-      const workbook = new Workbook();
-      const worksheet = workbook.addWorksheet("Stores");
-      worksheet.addRows([[...EXPORT_HEADERS], ...storesToRows(stores)]);
-      worksheet.columns = EXPORT_HEADERS.map((header) => ({
-        width: Math.min(Math.max(header.length + 2, 14), 42),
-      }));
-      worksheet.getRow(1).font = { bold: true };
-      worksheet.views = [{ state: "frozen", ySplit: 1 }];
-      const buffer = await workbook.xlsx.writeBuffer();
-      downloadBlob(
-        new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        }),
-        exportFilename(resolvedAddress, "xlsx"),
-      );
+      const { default: writeXlsxFile } = await import("write-excel-file/browser");
+      const header = EXPORT_HEADERS.map((value) => ({ value, fontWeight: "bold" as const }));
+      const workbook = writeXlsxFile([header, ...storesToRows(stores)], {
+        sheet: "Stores",
+        columns: EXPORT_HEADERS.map((heading) => ({
+          width: Math.min(Math.max(heading.length + 2, 14), 42),
+        })),
+      });
+      await workbook.toFile(exportFilename(resolvedAddress, "xlsx"));
     } finally {
       setExporting(false);
     }
