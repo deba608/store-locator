@@ -28,8 +28,9 @@ export async function geocodeAddress(
   const res = await fetch(url);
   if (!res.ok) throw new GoogleApiError(res.status, "geocoding request failed");
   const data = await res.json();
-  if (data.status === "ZERO_RESULTS" || !data.results?.length) return null;
+  if (data.status === "ZERO_RESULTS") return null;
   if (data.status !== "OK") throw new GoogleApiError(500, `geocoding error: ${data.status}`);
+  if (!data.results?.length) return null;
   const r = data.results[0];
   return {
     location: { lat: r.geometry.location.lat, lng: r.geometry.location.lng },
