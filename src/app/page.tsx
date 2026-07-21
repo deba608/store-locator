@@ -1,65 +1,90 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import SearchForm from "@/components/SearchForm";
+import StoreList from "@/components/StoreList";
+import type { SearchRequest, SearchResponse } from "@/lib/types";
+
+const StoreMap = dynamic(() => import("@/components/StoreMap"), { ssr: false });
+
+const ERROR_MESSAGES: Record<string, string> = {
+  location_not_found: "Couldn't find that location. Check the address or PIN code.",
+  invalid_request: "Invalid input. Check your search and try again.",
+  upstream_error: "Search service unavailable right now. Try again in a minute.",
+};
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<SearchResponse | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  async function handleSearch(req: SearchRequest) {
+    setLoading(true);
+    setError(null);
+    setSelectedId(null);
+    try {
+      const res = await fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setResult(null);
+        setError(ERROR_MESSAGES[data.error] ?? "Something went wrong.");
+      } else {
+        setResult(data);
+      }
+    } catch {
+      setResult(null);
+      setError("Network error. Check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="mx-auto min-h-screen w-full max-w-6xl bg-gray-50 p-4 sm:p-6">
+      <h1 className="mb-1 text-2xl font-bold text-gray-900">Store Locator</h1>
+      <p className="mb-4 text-sm text-gray-500">Find nearby stores by address or PIN code.</p>
+      <SearchForm onSearch={handleSearch} loading={loading} />
+
+      {error && <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+
+      {result && (
+        <>
+          <p className="mt-4 text-sm text-gray-600">
+            {result.stores.length} result{result.stores.length === 1 ? "" : "s"} near{" "}
+            <b>{result.resolvedAddress}</b>
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          {result.stores.length === 0 ? (
+            <p className="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
+              No stores found in this radius. Try increasing the radius.
+            </p>
+          ) : (
+            <div className="mt-3 grid gap-4 lg:grid-cols-2">
+              <div className="max-h-[70vh] overflow-y-auto pr-1">
+                <StoreList stores={result.stores} selectedId={selectedId} onSelect={setSelectedId} />
+              </div>
+              <div className="h-[50vh] lg:sticky lg:top-4 lg:h-[70vh]">
+                <StoreMap
+                  center={result.center}
+                  stores={result.stores}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                />
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {!result && !error && !loading && (
+        <p className="mt-10 text-center text-gray-400">
+          Enter a location and store type to begin.
+        </p>
+      )}
+    </main>
   );
 }
