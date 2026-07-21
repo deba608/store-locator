@@ -2,25 +2,25 @@
 import { useEffect, useRef, useState } from "react";
 import type { SearchRequest, StoreType } from "@/lib/types";
 
-const STORE_TYPES: { value: StoreType; label: string; emoji: string }[] = [
-  { value: "all", label: "All stores", emoji: "🏬" },
-  { value: "pharmacy", label: "Pharmacy", emoji: "💊" },
-  { value: "grocery", label: "Grocery", emoji: "🛒" },
-  { value: "electronics", label: "Electronics", emoji: "🔌" },
-  { value: "restaurant", label: "Restaurant", emoji: "🍽️" },
-  { value: "cafe", label: "Cafe", emoji: "☕" },
-  { value: "clothing", label: "Clothing", emoji: "👕" },
-  { value: "bakery", label: "Bakery", emoji: "🥐" },
-  { value: "hospital", label: "Hospital", emoji: "🏥" },
-  { value: "bank_atm", label: "Bank / ATM", emoji: "🏦" },
-  { value: "gym", label: "Gym", emoji: "🏋️" },
-  { value: "hardware", label: "Hardware", emoji: "🔧" },
-  { value: "bookstore", label: "Bookstore", emoji: "📚" },
-  { value: "furniture", label: "Furniture", emoji: "🛋️" },
-  { value: "beauty_salon", label: "Beauty salon", emoji: "💇" },
-  { value: "car_repair", label: "Car repair", emoji: "🔩" },
-  { value: "pet_store", label: "Pet store", emoji: "🐾" },
-  { value: "gas_station", label: "Gas station", emoji: "⛽" },
+const STORE_TYPES: { value: StoreType; label: string }[] = [
+  { value: "all", label: "All stores" },
+  { value: "pharmacy", label: "Pharmacy" },
+  { value: "grocery", label: "Grocery" },
+  { value: "electronics", label: "Electronics" },
+  { value: "restaurant", label: "Restaurant" },
+  { value: "cafe", label: "Cafe" },
+  { value: "clothing", label: "Clothing" },
+  { value: "bakery", label: "Bakery" },
+  { value: "hospital", label: "Hospital" },
+  { value: "bank_atm", label: "Bank / ATM" },
+  { value: "gym", label: "Gym" },
+  { value: "hardware", label: "Hardware" },
+  { value: "bookstore", label: "Bookstore" },
+  { value: "furniture", label: "Furniture" },
+  { value: "beauty_salon", label: "Beauty salon" },
+  { value: "car_repair", label: "Car repair" },
+  { value: "pet_store", label: "Pet store" },
+  { value: "gas_station", label: "Gas station" },
 ];
 
 type LocationMode = "address" | "pincode";
@@ -154,7 +154,7 @@ export default function SearchForm({
       >
         {STORE_TYPES.map((t) => (
           <option key={t.value} value={t.value}>
-            {t.emoji} {t.label}
+            {t.label}
           </option>
         ))}
       </select>

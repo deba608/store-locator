@@ -40,7 +40,7 @@ export default function StoreCard({
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-neutral-500">
             {store.rating !== null && (
               <span className="font-medium text-neutral-700">
-                <span className="text-amber-500">★</span> {store.rating}
+                Rating {store.rating}
                 <span className="font-normal text-neutral-400"> ({store.reviewCount})</span>
               </span>
             )}
@@ -98,7 +98,7 @@ export default function StoreCard({
               className="text-teal-700 hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
-              Directions ↗
+              Directions
             </a>
           </div>
         </div>

@@ -4,7 +4,7 @@ import L from "leaflet";
 import { useEffect, useRef } from "react";
 import type { LatLng, Store } from "@/lib/types";
 
-// numbered pin matching the result card index — the map↔list link
+// Numbered pin matching the corresponding result card index.
 function numberIcon(n: number, selected: boolean) {
   return L.divIcon({
     className: "",

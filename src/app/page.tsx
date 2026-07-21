@@ -94,7 +94,9 @@ export default function Home() {
 
           {!result && !error && !loading && (
             <div className="flex h-full flex-col items-center justify-center gap-2 px-8 py-16 text-center">
-              <span className="text-3xl">📍</span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-sm font-semibold text-teal-700">
+                SL
+              </span>
               <p className="text-sm font-medium text-neutral-600">Search to find stores</p>
               <p className="text-xs text-neutral-400">
                 Enter an address or PIN code, pick a store type, set your radius.
