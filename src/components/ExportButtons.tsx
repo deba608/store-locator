@@ -31,7 +31,7 @@ export default function ExportButtons({
     setExporting(true);
     try {
       const XLSX = await import("xlsx");
-      const worksheet = XLSX.utils.aoa_to_sheet([EXPORT_HEADERS, ...storesToRows(stores)]);
+      const worksheet = XLSX.utils.aoa_to_sheet([[...EXPORT_HEADERS], ...storesToRows(stores)]);
       worksheet["!cols"] = EXPORT_HEADERS.map((header) => ({
         wch: Math.min(Math.max(header.length + 2, 14), 42),
       }));
