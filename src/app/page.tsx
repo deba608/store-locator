@@ -3,6 +3,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import SearchForm from "@/components/SearchForm";
 import StoreList from "@/components/StoreList";
+import ExportButtons from "@/components/ExportButtons";
 import type { SearchRequest, SearchResponse } from "@/lib/types";
 
 const StoreMap = dynamic(() => import("@/components/StoreMap"), { ssr: false });
@@ -65,10 +66,18 @@ export default function Home() {
 
           {result && (
             <>
-              <p className="sticky top-0 z-10 border-b border-neutral-100 bg-white/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 backdrop-blur">
-                {result.stores.length} result{result.stores.length === 1 ? "" : "s"} ·{" "}
-                {result.resolvedAddress}
-              </p>
+              <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-neutral-100 bg-white/95 px-4 py-2 backdrop-blur">
+                <p className="min-w-0 truncate text-[11px] font-semibold uppercase tracking-wide text-neutral-400">
+                  {result.stores.length} result{result.stores.length === 1 ? "" : "s"} ·{" "}
+                  {result.resolvedAddress}
+                </p>
+                {result.stores.length > 0 && (
+                  <ExportButtons
+                    stores={result.stores}
+                    resolvedAddress={result.resolvedAddress}
+                  />
+                )}
+              </div>
               {result.stores.length === 0 ? (
                 <p className="m-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
                   No stores found in this radius. Try increasing the radius.

@@ -2,6 +2,8 @@
 
 Find nearby stores by address or PIN code. Enter a location, pick a store type (pharmacy, grocery, electronics, restaurant, clothing) and a search radius (2–20 km) — get a list of stores with distance, phone, opening hours, open/closed status, rating, website, a directions link, and markers on a map.
 
+Search results can be downloaded from the results header as either a CSV file or an Excel (`.xlsx`) workbook.
+
 ## How it works
 
 - **Next.js 16 (App Router, TypeScript)** — one app, frontend + backend.
