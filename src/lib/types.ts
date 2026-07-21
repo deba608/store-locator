@@ -20,7 +20,25 @@ export interface Store {
   directionsUrl: string;
 }
 
-export type StoreType = "pharmacy" | "grocery" | "electronics" | "restaurant" | "clothing";
+export type StoreType =
+  | "all"
+  | "pharmacy"
+  | "grocery"
+  | "electronics"
+  | "restaurant"
+  | "clothing"
+  | "bakery"
+  | "hospital"
+  | "bank_atm"
+  | "gym"
+  | "hardware"
+  | "bookstore"
+  | "furniture"
+  | "beauty_salon"
+  | "car_repair"
+  | "pet_store"
+  | "gas_station"
+  | "cafe";
 
 export interface SearchRequest {
   query: string;

@@ -1,12 +1,25 @@
 import type { LatLng, StoreType } from "./types";
 import type { GooglePlace } from "./mapper";
 
-const TYPE_MAP: Record<StoreType, string> = {
+const TYPE_MAP: Partial<Record<StoreType, string>> = {
   pharmacy: "pharmacy",
   grocery: "grocery_store",
   electronics: "electronics_store",
   restaurant: "restaurant",
   clothing: "clothing_store",
+  bakery: "bakery",
+  hospital: "hospital",
+  bank_atm: "bank",
+  gym: "gym",
+  hardware: "hardware_store",
+  bookstore: "book_store",
+  furniture: "furniture_store",
+  beauty_salon: "beauty_salon",
+  car_repair: "car_repair",
+  pet_store: "pet_store",
+  gas_station: "gas_station",
+  cafe: "cafe",
+  // "all" intentionally omitted: no includedTypes filter sent to Google
 };
 
 export class GoogleApiError extends Error {
@@ -57,6 +70,7 @@ export async function searchNearbyStores(
   type: StoreType,
   radiusKm: number
 ): Promise<GooglePlace[]> {
+  const googleType = TYPE_MAP[type];
   const res = await fetch("https://places.googleapis.com/v1/places:searchNearby", {
     method: "POST",
     headers: {
@@ -65,7 +79,7 @@ export async function searchNearbyStores(
       "X-Goog-FieldMask": FIELD_MASK,
     },
     body: JSON.stringify({
-      includedTypes: [TYPE_MAP[type]],
+      ...(googleType ? { includedTypes: [googleType] } : {}),
       maxResultCount: 20,
       locationRestriction: {
         circle: {
