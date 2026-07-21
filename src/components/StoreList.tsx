@@ -12,9 +12,15 @@ export default function StoreList({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3">
-      {stores.map((s) => (
-        <StoreCard key={s.id} store={s} selected={s.id === selectedId} onSelect={onSelect} />
+    <div className="divide-y divide-neutral-100">
+      {stores.map((s, i) => (
+        <StoreCard
+          key={s.id}
+          store={s}
+          index={i}
+          selected={s.id === selectedId}
+          onSelect={onSelect}
+        />
       ))}
     </div>
   );
