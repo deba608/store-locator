@@ -6,15 +6,27 @@ Search results can be downloaded from the results header as either a CSV file or
 
 ## How it works
 
-- **Next.js 16 (App Router, TypeScript)** — one app, frontend + backend.
-- The browser only talks to `POST /api/search`. The server:
-  1. Validates input with zod.
-  2. Geocodes the address/PIN via **Google Geocoding API**.
-  3. Finds stores via **Google Places API (New)** `searchNearby`.
-  4. Maps results to a clean `Store` shape, computes distance (haversine), sorts nearest-first.
-  5. Caches responses in memory for 5 minutes.
-- The Google API key lives only on the server (`.env.local`) — never shipped to the browser.
-- The map is **Leaflet + OpenStreetMap tiles** (free, no key needed for display).
+```mermaid
+flowchart TD
+  A["User enters address + type + radius"] --> B["POST /api/search"]
+  B --> C["zod validation"]
+  C -- "invalid" --> D["400 invalid_request"]
+  C -- "valid" --> E["Check in-memory cache"]
+  E -- "cached" --> F["Return cached response"]
+  E -- "miss" --> G["Google Geocoding API"]
+  G -- "ZERO_RESULTS" --> H["404 location_not_found"]
+  G -- "geolocation" --> I["Google Places API searchNearby"]
+  I -- "API error" --> J["502 upstream_error"]
+  I -- "places" --> K["Map & compute haversine distance"]
+  K --> L["Sort nearest-first"]
+  L --> M["Cache response (5 min TTL)"]
+  M --> N["Return SearchResponse JSON"]
+  N --> O["Render StoreCard list + Leaflet map"]
+```
+
+- The browser only talks to `POST /api/search`. Everything else runs server-side.
+- The Google API key lives only in `.env.local` — never sent to the browser.
+- The map uses **Leaflet + OpenStreetMap tiles** (free, no key needed).
 
 ## Setup
 
